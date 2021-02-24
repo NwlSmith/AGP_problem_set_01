@@ -42,7 +42,13 @@ public class SudokuSolver : MonoBehaviour
 
     private void PopulateBoard()
     {
+        char[] inputFile = file.text.ToCharArray();
 
+        for (int i = 0; i < inputFile.Length; i++)
+        {
+            if (!inputFile[i].Equals('.'))
+                 board[i / 9, i % 9].SetNum(inputFile[i] - 48);
+        }
     }
 
     // I wanted to make this a coroutine so people could see the calculations in progress.
