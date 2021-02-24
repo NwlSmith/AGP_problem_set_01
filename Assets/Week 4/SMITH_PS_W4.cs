@@ -96,7 +96,7 @@ public class SMITH_PS_W4 : MonoBehaviour
 
         int sqrt = (int)Mathf.Sqrt(input);
         // The least devisor of a number will never be more than half of the number.
-        for (int i = 3; i < sqrt; i += 2)
+        for (int i = 3; i <= sqrt; i += 2)
         {
             if (input % i == 0)
                 return i;
@@ -118,14 +118,24 @@ public class SMITH_PS_W4 : MonoBehaviour
     // Imagine this is your "Start()" function
     public void Initialize()
     {
-        
+        changingFunctDel = NumberOfDigits;
     }
 
     public int ChangingFunction(int input)
     {
-        // Will need delegate or something.
-        return 0;
+        // It would have been nice to try using a local static bool, but C# does not allow those.
+
+        int result = changingFunctDel(input);
+
+        if (result == 3)
+            changingFunctDel = SmallestPrimeFactor;
+        
+        return result;
     }
+
+    private delegate int ChangingFunctDel(int input);
+    private ChangingFunctDel changingFunctDel;
+
     
     
     // =========================== DON'T EDIT BELOW THIS LINE =========================== //
