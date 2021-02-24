@@ -7,7 +7,7 @@ using TMPro;
 using Random = UnityEngine.Random;
 
 [ExecuteInEditMode]
-public class Week4 : MonoBehaviour
+public class SMITH_PS_W4 : MonoBehaviour
 {
     /*
      * Create a function that helps takes in four bytes (a, b, c, d), and returns an integer that represents those four
@@ -22,7 +22,7 @@ public class Week4 : MonoBehaviour
 
     private int BytesToInt(byte a, byte b, byte c, byte d)
     {
-        return 0;
+        return (a << 24) + (b << 16) + (c << 8) + d;
     }
 
     private int PowerOfTwo(int power)
@@ -46,12 +46,73 @@ public class Week4 : MonoBehaviour
 
     public int SmallestPrimeFactor(int input)
     {
-        return 0;
+
+        /* initial approach. It's slow, so let's optimize.
+        // Goes through every number from 2 to input. That's O(N)
+
+        for (int i = 2; i <= input; i++)
+        {
+            if (input % i == 0)
+                return i;
+        }
+        return input;
+        */
+
+
+        /* if we take care of 2 immediately, we can make the loop twice as fast.
+        // This is ~ twice as fast, but we can do better.
+        // Goes through every OTHER number from 2 to input. That's O(N/2), but because of how Big O notation works, it is still considered O(N).
+        // You can think of Big O working like a graph with the input on the X axis and the amount of calculations on the Y.
+        // For this graph, the line is 1/2 as steep as it was originally, but it is still linear, and thus it is still O(N).
+
+        if (input % 2 == 0)
+            return 2;
+
+        for (int i = 3; i <= input; i += 2)
+        {
+            if (input % i == 0)
+                return i;
+        }
+        */
+
+        /* Again, this is ~ twice as fast, but we can do better.
+        // Goes through every Other number from 2 to half of the input. That's O(N/4), but because of how Big O notation works, it is still considered O(N).
+        if (input % 2 == 0)
+            return 2;
+
+        int half = input / 2;
+        // The least devisor of a number will never be more than half of the number.
+        for (int i = 3; i < half; i += 2)
+        {
+            if (input % i == 0)
+                return i;
+        }
+        */
+
+        // We can cut this down even more, because the smallest prime factor will actually never be more than the square root of a number.
+        // Goes through every Other number from 2 to the square root of input. It is now O(sqrt(n)/2), which IS better than O(N).
+        if (input % 2 == 0)
+            return 2;
+
+        int sqrt = (int)Mathf.Sqrt(input);
+        // The least devisor of a number will never be more than half of the number.
+        for (int i = 3; i < sqrt; i += 2)
+        {
+            if (input % i == 0)
+                return i;
+        }
+        
+        // The only way to make this more efficient would be to cache Inputs and their return values so you never do the same calculation twice.
+
+
+        return input;
     }
 
+    // (I think) you could actually extend this to any base, not just base 10.
+    // All you would need to do is make the base of the log the wanted base, ie, if you want to know how many hex digits are in a number, just make the base 16.
     public int NumberOfDigits(int input)
     {
-        return 0;
+        return (int)Mathf.Log10(input) + 1;
     }
 
     // Imagine this is your "Start()" function
@@ -62,6 +123,7 @@ public class Week4 : MonoBehaviour
 
     public int ChangingFunction(int input)
     {
+        // Will need delegate or something.
         return 0;
     }
     
