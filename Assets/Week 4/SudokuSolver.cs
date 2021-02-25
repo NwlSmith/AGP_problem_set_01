@@ -33,6 +33,14 @@ public class SudokuSolver : MonoBehaviour
             yield return null;
         }
         Debug.Log($"Time after start: {Time.time - timeAtStartOfAlgorithm}");
+        if (CheckSolution())
+        {
+            Debug.Log("Solution correct!");
+        }
+        else
+        {
+            Debug.Log("Solution incorrect!");
+        }
     }
 
     private void ConstructBoard()
@@ -105,33 +113,10 @@ public class SudokuSolver : MonoBehaviour
         initFinished = SolverRecurse(0);
     }
 
-    // I wanted to make this a coroutine so people could see the calculations in progress.
+    // I wanted to make this a coroutine so people could see the calculations in progress, but that wouldn't work super well.
     // This algorithm uses a brute-force approach, there are absolutely more efficient algorithms.
-    private IEnumerator Solver1Enum()
-    {
-        // The current index of the board in 1d form.
-        //int curIndex = 0;
-
-        // for each square on the board
-        for(int i = 0; i < 81; i++)
-        {
-            // If it was not one of the original numbers...
-            if (!board[i].original)
-            {
-
-            }
-        }
-
-        yield return null;
-    }
-
-    private bool Solver1Recurse(int index)
-    {
-
-        return false;
-    }
-
-    // This must be done recursively, otherwise I would 81 nested for loops
+    // This must be done recursively, otherwise I would need 81 nested for loops
+    // It is kind of difficult to determine the O-notation complexity of this algorithm, because the size of the problem is constant, but it can be solved either very quickly or very slowly.
     private bool SolverRecurse(int index)
     {
         if (index >= 81) return true;
@@ -152,6 +137,16 @@ public class SudokuSolver : MonoBehaviour
         board[index].ResetNum();
 
         return false;
+    }
+
+    private bool CheckSolution()
+    {
+        for (int i = 0; i < 81; i++)
+        {
+            if (!ValidPlacement(i))
+                return false;
+        }
+        return true;
     }
     
     private bool ValidPlacement(int curIndex)
