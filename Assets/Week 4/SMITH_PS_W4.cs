@@ -118,23 +118,20 @@ public class SMITH_PS_W4 : MonoBehaviour
     // Imagine this is your "Start()" function
     public void Initialize()
     {
-        changingFunctDel = NumberOfDigits;
+        currentFunction = NumberOfDigits;
     }
 
     public int ChangingFunction(int input)
     {
         // It would have been nice to try using a local static bool, but C# does not allow those.
 
-        int result = changingFunctDel(input);
+        int result = currentFunction(input);
 
         if (result == 3)
-            changingFunctDel = SmallestPrimeFactor;
+            currentFunction = SmallestPrimeFactor;
         
         return result;
     }
-
-    private delegate int ChangingFunctDel(int input);
-    private ChangingFunctDel changingFunctDel;
 
     
     

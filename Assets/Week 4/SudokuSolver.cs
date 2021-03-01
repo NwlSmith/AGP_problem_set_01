@@ -113,10 +113,14 @@ public class SudokuSolver : MonoBehaviour
         initFinished = SolverRecurse(0);
     }
 
-    // I wanted to make this a coroutine so people could see the calculations in progress, but that wouldn't work super well.
-    // This algorithm uses a brute-force approach, there are absolutely more efficient algorithms.
-    // This must be done recursively, otherwise I would need 81 nested for loops
-    // It is kind of difficult to determine the O-notation complexity of this algorithm, because the size of the problem is constant, but it can be solved either very quickly or very slowly.
+    /*
+     * I wanted to make this a coroutine so people could see the calculations in progress, but that wouldn't work super well.
+     * This algorithm uses a brute-force approach, there are absolutely more efficient algorithms.
+     * This must be done recursively, otherwise I would need 81 nested for loops.
+     * It is kind of difficult to determine the O-notation complexity of this algorithm.
+     * The size of the problem doesn't come from the amount of input, but from the number of blank spaces.
+     * Through some research, it turns out the size of the algorithm is O(9^(n*n)), where n is the number of blank spaces.
+     */
     private bool SolverRecurse(int index)
     {
         if (index >= 81) return true;
