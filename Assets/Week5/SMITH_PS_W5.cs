@@ -123,16 +123,44 @@ public class SMITH_PS_W5 : MonoBehaviour
      * JSON objects.
      */
 
+    private struct ScoreTuple
+    {
+        public string name;
+        public uint score;
+
+        public ScoreTuple(string n, uint s)
+        {
+            name = n;
+            score = s;
+        }
+    }
     public int NumberAboveScore(TextAsset jsonFile, int score)
     {
         var toReturn = 0;
-     
+        JSONNode highScores = JSON.Parse(jsonFile.text)["highScores"];
+        
+        foreach (JSONNode node in highScores)
+        {
+            if (node["score"].AsInt > score) toReturn++;
+        }
+
         return toReturn;
     }
 
     public string GetHighScoreName(TextAsset jsonFile)
     {
-        return "";
+        JSONNode highScores = JSON.Parse(jsonFile.text)["highScores"];
+
+        ScoreTuple highest = new ScoreTuple("", 0);
+
+        foreach (JSONNode node in highScores)
+        {
+            uint score = (uint)node["score"].AsInt;
+            if (score > highest.score)
+                highest = new ScoreTuple(node["player"], score);
+        }
+
+        return highest.name;
     }
     
     // =========================== DON'T EDIT BELOW THIS LINE =========================== //
