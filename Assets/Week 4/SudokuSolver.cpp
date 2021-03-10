@@ -3,6 +3,7 @@
 #include <cstring>
 
 /*
+ * README:
  * Date: 2/24/2021
  * Description: Sudoku solver.
  * Unity crashed when I tried run this extremely inefficient code, so I decided to write in CPP instead.
