@@ -103,14 +103,11 @@ public class SMITH_PS_W7 : MonoBehaviour
 
         return toReturnList.ToArray();
     }
-    
+
     // Return the sum of all the numbers given.
 
-    public int SumOfAllNumbers(params int[] numbers)
-    {
-        return 0;
-    }
-    
+    public int SumOfAllNumbers(params int[] numbers) => (numbers.Length == 0) ? 0 : numbers[numbers.Length - 1] + SumOfAllNumbers(numbers.Take(numbers.Length - 1).ToArray());
+
     /*
      * Solve the following problem with recursion:
      *
@@ -119,11 +116,8 @@ public class SMITH_PS_W7 : MonoBehaviour
      * a given amount of money, assuming they always return all the cans and then buy as much soda as they can.
      */
 
-    public int TotalCansPurchasable(float money, float price, float canRefund)
-    {
-        return 0;
-    }
-    
+    public int TotalCansPurchasable(float money, float price, float canRefund) => (money < price) ? 0 : (int)(money / price) + TotalCansPurchasable(money % price + canRefund * (int)(money / price), price, canRefund);
+
     // =========================== DON'T EDIT BELOW THIS LINE =========================== //
 
     public TextMeshProUGUI recursionTest, sodaTest;
