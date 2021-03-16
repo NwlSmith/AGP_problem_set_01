@@ -25,6 +25,11 @@ public class SMITH_PS_W7 : MonoBehaviour
     public bool IsPalindrome(string toCheck) => toCheck.Length <= 1 ? true : toCheck[0].Equals(toCheck[toCheck.Length - 1]) && IsPalindrome(toCheck.Substring(1, toCheck.Length - 2));
 
 
+    // Using a cache brings down calculation time CONSIDERABLY. The more characters, the more caching will speed up this algorithm.
+    // This algorithm will look at the same group of chars consistently, so having a way to say "okay, I've seen this before" will save a ton of time.
+    // The 1 weakness of this solution is that if the same char occurs again out of order in a list, it will only sometimes be able to take advantage of caching.
+    // For example, AABCD -> ABC and ABC (the first and second A) would need to be calculated individually without caching, but now only need to be calculated once.
+    // BUT, ABCA -> ABC and BCA have the same combination of strings, but my method does not test for this. The solution could be to alphabetize key inputs, which could also take time.
     private class CharCache
     {
 
@@ -40,50 +45,11 @@ public class SMITH_PS_W7 : MonoBehaviour
             return key;
         }
 
-        public bool Exists(params char[] characters)
-        {
+        public bool Exists(params char[] characters) => charactersToStringCache.ContainsKey(CharToString(characters));
 
-            string key = CharToString(characters);
+        public string[] Get(char[] characters) => charactersToStringCache[CharToString(characters)];
 
-            Debug.Log($"Does cache contain {key}? {charactersToStringCache.ContainsKey(key)}");
-
-            return charactersToStringCache.ContainsKey(key);
-        }
-
-        public string[] Get(char[] characters)
-        {
-            string key = CharToString(characters);
-
-            string[] str = charactersToStringCache[key];
-
-            string toPrintS = "";
-
-            foreach (string s in str)
-            {
-                toPrintS += s + ", ";
-            }
-
-            Debug.Log($"Getting cache[{key}]. returning {toPrintS}");
-
-            return charactersToStringCache[key];
-        }
-
-        public void Set(char[] characters, string[] strings)
-        {
-            string key = CharToString(characters);
-
-            string toPrintS = "";
-
-            foreach (string s in strings)
-            {
-                toPrintS += s + ", ";
-            }
-
-            Debug.Log($"Setting cache[{key}] to {toPrintS}");
-
-
-            charactersToStringCache.Add(key, strings);
-        }
+        public void Set(char[] characters, string[] strings) => charactersToStringCache.Add(CharToString(characters), strings);
 
     }
 
@@ -92,21 +58,8 @@ public class SMITH_PS_W7 : MonoBehaviour
     // Return all strings that can be made from the set characters using all characters.
     public string[] AllStringsFromCharacters(params char[] characters)
     {
-        string toPrint = "";
-
-        foreach (char c in characters)
-        {
-            toPrint += c;
-        }
-        Debug.Log($"Called AllStringsFromCharacters(characters): {toPrint}");
-
-
-        if (characters.Length == 0)
-            return new string[0];
-
         if (characters.Length == 1)
         {
-            Debug.Log($"characters.Length == 1, returning {characters[0].ToString()}");
             string[] ret = new string[1];
             ret[0] = characters[0].ToString();
             return ret;
@@ -114,15 +67,11 @@ public class SMITH_PS_W7 : MonoBehaviour
 
         if (charCache.Exists(characters))
             return charCache.Get(characters);
-        
 
         List<string> toReturnList = new List<string>();
-        
+
         foreach (char c in characters)
         {
-            // call allstringsfromchars on char array minus c, add c to every element from the returned allstringsfromchars
-
-            Debug.Log($"Looking at c = {c}");
 
             char[] charsMinusC = new char[characters.Length - 1];
 
@@ -142,24 +91,13 @@ public class SMITH_PS_W7 : MonoBehaviour
                 }
             }
 
-            toPrint = "";
-            foreach (char c2 in charsMinusC)
-            {
-                toPrint += c2;
-            }
-
-            Debug.Log($"charsMinusC = {toPrint}");
-
             string[] allStrings = AllStringsFromCharacters(charsMinusC);
 
             foreach (string str in allStrings)
             {
                 toReturnList.Add(c + str);
-                Debug.Log($"added c + str = {c + str}");
             }
         }
-
-        // SUUUUUPER inefficient.
 
         charCache.Set(characters, toReturnList.ToArray());
 
@@ -195,20 +133,7 @@ public class SMITH_PS_W7 : MonoBehaviour
         recursionTest.text =  "Recursion Problems\n<align=left>\n";
         recursionTest.text += Success(ReverseString("TEST") == "TSET") + " string reverser worked correctly.\n";
         recursionTest.text += Success(!IsPalindrome("TEST") && IsPalindrome("ASDFDSA") && IsPalindrome("ASDFFDSA")) + " palindrome test worked correctly.\n";
-
-
-
-        Debug.Log($"NEW CALL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        string[] strs = AllStringsFromCharacters('A', 'B', 'C', 'D', 'E');
-        string toPrint = "";
-        foreach(string str in strs)
-        {
-            toPrint += str + ", ";
-            Debug.Log(str);
-        }
-        Debug.Log($"In the end, all strings = {toPrint}");
-        charCache = new CharCache();
-        //recursionTest.text += Success(AllStringsFromCharacters('A', 'B').Length == 2 && AllStringsFromCharacters('A').Length == 1 && AllStringsFromCharacters('A', 'B', 'C').Length == 6 && AllStringsFromCharacters('A', 'B', 'C', 'D', 'E', 'F', 'G').Length == 5040) + " all strings test worked correctly.\n";
+        recursionTest.text += Success(AllStringsFromCharacters('A', 'B').Length == 2 && AllStringsFromCharacters('A').Length == 1 && AllStringsFromCharacters('A', 'B', 'C').Length == 6 && AllStringsFromCharacters('A', 'B', 'C', 'D', 'E', 'F', 'G').Length == 5040) + " all strings test worked correctly.\n";
         recursionTest.text += Success(SumOfAllNumbers(1, 2, 3, 4, 5) == 15 && SumOfAllNumbers(1, 2, 3, 4, 5, 6, 7) == 28) + " sum test worked correctly.\n";
 
         sodaTest.text = "Soda Problem\n<align=left>\n";
